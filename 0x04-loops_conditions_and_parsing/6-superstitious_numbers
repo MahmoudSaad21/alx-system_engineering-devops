@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
-# A script that loops through 1 to 10 using while
+# Wite a Bash script that displays numbers from 1 to 20 and:
+# displays 4 and then bad luck from China for the 4th loop iteration
+# displays 9 and then bad luck from Japan for the 9th loop iteration
+# displays 17 and then bad luck from Italy for the 17th loop iteration
 
 c=1
 
-while [ $c -le 10 ]
+while [ $c -le 20 ]
 do
-    if [ $c -eq 4 ]
-    then
-        echo "bad luck"
-    elif [ $c -eq 8 ]
-    then
-        echo "good luck"
-    else
-        echo "Best School"
-    fi
-    ((c++))
+  echo "$c"
+  case $c in
+    "4") echo "bad luck from China";;
+    "9") echo "bad luck from Japan";;
+    "17") echo "bad luck from Italy";;
+  esac
+  (( c++ ))
 done
