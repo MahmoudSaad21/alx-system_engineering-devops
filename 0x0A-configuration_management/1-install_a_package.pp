@@ -1,15 +1,20 @@
-# install_flask.pp
+# install flask from pip3.
 
-# ensure that python present
-package { 'python3-pip':
-  ensure => installed,
+# ensure that python present 
+package { 'python3.8':
+  ensure => present,
 }
 
-# install flask
-exec { 'install_flask':
-  command     => '/usr/bin/pip3 install flask==2.1.0',
-  path        => ['/usr/bin', '/usr/local/bin'],
-  environment => ['LC_ALL=en_US.UTF-8', 'LANG=en_US.UTF-8'],
-  unless      => '/usr/bin/pip3 show flask | grep -q "Version: 2.1.0"',
-  require     => Package['python3-pip'],
+# Install Flask 
+package { 'flask':
+  ensure   => '2.1.0',
+  provider => 'pip',
+  require  => Package['python3-pip'],
+}
+
+# Install Werkzeug 
+package { 'werkzeug':
+  ensure   => '2.1.1',
+  provider => 'pip',
+  require  => Package['python3-pip'],
 }
