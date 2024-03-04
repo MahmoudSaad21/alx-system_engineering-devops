@@ -1,22 +1,29 @@
 #!/usr/bin/env bash
-# Script that configures Nginx server with a custom header
-# Install Nginx if not already installed
+#!/usr/bin/env bash
+# Configure Nginx so that its HTTP response contains a custom header (on web-01 and web-02)
+
+# Updating Packages before performing installations
 sudo apt-get update
 sudo apt-get install -y nginx
 
-# Add custom header configuration to Nginx
-echo 'server {
-    listen 80 default_server;
-    listen [::]:80 default_server;
+# Creating an index.html page
+echo "Hello World!" | sudo tee /var/www/html/index.html
 
-    server_name _;
+# Performing a "moved permanently redirection" (301)
+new_string="server_name _;\n\trewrite ^\/redirect_me https:\/\/github.com\/MahmoudSaad21 permanent;"
+sudo sed -i "s/server_name _;/$new_string/" /etc/nginx/sites-enabled/default
 
-    location / {
-        add_header X-Served-By $HOSTNAME;
-        root /var/www/html;
-        index index.html index.htm index.nginx-debian.html;
-    }
-}' | sudo tee /etc/nginx/sites-available/default > /dev/null
+# Creating a 404 Custom error page
+echo "Ceci n'est pas une page" | sudo tee /var/www/html/custom_404.html
+new_string="listen 80 default_server;\n\terror_page 404 \/custom_404.html;\n\tlocation = \/custom_404.html {\n\t\troot \/var\/www\/html;\n\t\tinternal;\n\t}"
 
-# Restart Nginx to apply changes
-sudo systemctl restart nginx
+sudo sed -i "s/listen 80 default_server;/$new_string/" /etc/nginx/sites-enabled/default
+
+# Creating an HTTP response header
+sudo sed -i "/server_name _/a add_header X-Served-By $HOSTNAME;" /etc/nginx/sites-enabled/default
+
+# Testing configurations for syntax errors
+sudo nginx -t
+
+# restart nginx after implementing changes
+sudo service nginx restart
