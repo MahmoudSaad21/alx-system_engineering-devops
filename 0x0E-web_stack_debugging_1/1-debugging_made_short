@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 #Sets nginx for listening to 80 port
-apt-get update
-apt-get -y install nginx
-sed -i '/listen\s\+80/d' /etc/nginx/sites-available/default
-sed -i '/server_name _;/a \ \ listen 80;' /etc/nginx/sites-available/default
-service nginx status
+sed -i "s/8080/80/" /etc/nginx/sites-enabled/default
+sudo service nginx restart
+kill -9 "$(cat /var/run/nginx.pid)"
